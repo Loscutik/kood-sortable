@@ -17,3 +17,18 @@ body {
     padding: 5rem;
     cursor: crosshair;
 }
+
+
+.cons{
+    width: 50vw;
+    height: 25vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 14px;
+    color: rgb(13, 81, 141);
+    border: solid 1px green;
+    margin: auto;
+    text-align: left;
+  }
+
