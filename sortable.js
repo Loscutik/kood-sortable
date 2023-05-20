@@ -3,7 +3,14 @@ import { TableHead, Powerstats } from './sortable.data.js';
 
 export function seeThemAll() {
     const cons = document.getElementById('cons');
+    const searcher = document.createElement('input');
 
+    searcher.id = 'search';
+    searcher.setAttribute('placeholder', 'Type name');
+    document.body.appendChild(searcher);
+
+    table.setAttribute('id', 'table');
+    document.body.appendChild(table);
     // Request the file with fetch, the data will downloaded to your browser cache.
     fetch('https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json')
         .then((response) => response.json()) // parse the response from JSON
@@ -39,12 +46,14 @@ function loadData(heroes) {
         return info;
     });
 
-    cons.textContent = cons.textContent + ' - ' + heroesValubaleInformations[2].get('powerstats_speed');
+    //cons.textContent = cons.textContent + ' - ' + heroesValubaleInformations[2].get('powerstats_speed');
     // console.log(heroesValubaleInformations.slice(0, 2));
     let rowsNum = heroesValubaleInformations.length;
     const tbody = document.getElementById('tbody');
     createRows(5, tbody, infoKeys);
-    displayHeroes(heroesValubaleInformations.slice(0, 5), tbody, infoKeys);
+    const trs = tbody.querySelectorAll('tr');
+    displayHeroes(heroesValubaleInformations.slice(0, 5), trs, infoKeys);
+    search(heroesValubaleInformations, tbody, infoKeys)
 }
 
 export function tableCreate() {
@@ -101,9 +110,8 @@ function createRows(num, tablBody, infoKeys) {
     }
 }
 
-function displayHeroes(heroesInfo, tablBody, infoKeys) {
-    const trs = tablBody.querySelectorAll('tr');
-    console.log(heroesInfo);
+function displayHeroes(heroesInfo, trs, infoKeys) {
+
     if (trs.length !== heroesInfo.length) {
         console.log('Error heroesInfo.length:', heroesInfo.length, ' not equal to trs.length: ', trs.length);
         throw new Error('Error heroesInfo.length:', heroesInfo.length, ' not equal to trs.length: ', trs.length);
@@ -119,9 +127,30 @@ function displayHeroes(heroesInfo, tablBody, infoKeys) {
     }
 }
 
-function search() {
+function search(heroesInfo, tablBody, infoKeys) {
+    search = document.getElementById('search')
+    search.addEventListener('input', (e) => {
+        let trs = tablBody.querySelectorAll('tr');
+        let textForSearch = e.target.value;
+        let heroes = heroesInfo.filter(hero => {
+            return hero.get('name').toLowerCase().includes(textForSearch.toLowerCase())
+        });
+        if (heroes.length > trs.length) {
+            displayHeroes(heroes.slice(0, trs.length), trs, infoKeys);
+        } else {
+            for (let i = trs.length -1; i >= heroes.length; i--) {
+                trs[i].remove();
+            }
+            trs = tablBody.querySelectorAll('tr');
+            displayHeroes(heroes, trs, infoKeys);
+        }
 
+    });
 }
+
+
+
+
 function sort() {
 
 }

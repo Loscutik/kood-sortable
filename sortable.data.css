@@ -32,10 +32,25 @@ body {
     text-align: left;
   }
 
+  #search{
+    display:block;
+    width: 20vw;
+    height: 5vh;
+    position: absolute;
+    top: 0;
+    left: 80vw;
+    font-size: 14px;
+    color: rgb(13, 81, 141);
+    border: solid 2px green;
+    margin: auto;
+    text-align: left;
+  }
+
   table {
 	width: 100%;
 	border: none;
-	margin-bottom: 20px;
+    margin-top: 20vh;
+	margin-bottom: 5vhpx;
 }
 table thead th {
 	font-weight: bold;
