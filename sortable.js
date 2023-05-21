@@ -2,7 +2,7 @@
 import { TableHead, Powerstats } from './sortable.data.js';
 
 export function seeThemAll() {
-    const cons = document.getElementById('cons');
+    //const cons = document.getElementById('cons');
     const searcher = document.createElement('input');
 
     searcher.id = 'search';
@@ -23,6 +23,7 @@ function loadData(heroes) {
     //cons.textContent = cons.textContent+' - '+ hero.name;
     const infoKeys = TableHead.flatMap(item =>
         item === 'powerstats' ? Powerstats.map(power => `powerstats_${power}`) : item.split(' ').join(''));
+
     let heroesValubaleInformations = heroes.map(hero => {
 
         const info = new Map();
@@ -48,12 +49,12 @@ function loadData(heroes) {
 
     //cons.textContent = cons.textContent + ' - ' + heroesValubaleInformations[2].get('powerstats_speed');
     // console.log(heroesValubaleInformations.slice(0, 2));
-    let rowsNum = heroesValubaleInformations.length;
+    let rowsNum = 5;
     const tbody = document.getElementById('tbody');
-    createRows(5, tbody, infoKeys);
-    const trs = tbody.querySelectorAll('tr');
-    displayHeroes(heroesValubaleInformations.slice(0, 5), trs, infoKeys);
-    search(heroesValubaleInformations, tbody, infoKeys)
+    createRows(0, rowsNum, tbody, infoKeys);
+    //const trs = tbody.querySelectorAll('tr');
+    displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
+    search(heroesValubaleInformations, tbody, rowsNum, infoKeys)
 }
 
 export function tableCreate() {
@@ -96,9 +97,9 @@ export function tableCreate() {
 
 }
 
-function createRows(num, tablBody, infoKeys) {
+function createRows(startNum, endNum, tablBody, infoKeys) {
 
-    for (let i = 0; i < num; i++) {
+    for (let i = startNum; i < endNum; i++) {
         let tr = document.createElement('tr');
         tr.setAttribute('id', `tr-${i}`);
         for (let j = 0; j < infoKeys.length; j++) {
@@ -110,14 +111,28 @@ function createRows(num, tablBody, infoKeys) {
     }
 }
 
-function displayHeroes(heroesInfo, trs, infoKeys) {
-
-    if (trs.length !== heroesInfo.length) {
-        console.log('Error heroesInfo.length:', heroesInfo.length, ' not equal to trs.length: ', trs.length);
-        throw new Error('Error heroesInfo.length:', heroesInfo.length, ' not equal to trs.length: ', trs.length);
+function displayHeroes(heroesInfo, tablBody, maxRowsNumber, infoKeys) {
+    if (heroesInfo.length > maxRowsNumber) {
+        console.log('Error heroesInfo.length:', heroesInfo.length, ' not greater than desired number of rows: ', maxRowsNumber);
+        throw new Error('Error heroesInfo.length:', heroesInfo.length, ' not greater than desired number of rows: ', maxRowsNumber);
     }
+
+    let trs = tablBody.querySelectorAll('tr');
+
+    switch (true) {
+        case heroesInfo.length > trs.length:
+            createRows(trs.length, heroesInfo.length, tablBody, infoKeys);
+            trs = tablBody.querySelectorAll('tr');
+            break;
+        case heroesInfo.length < trs.length:
+            for (let i = trs.length - 1; i >= heroesInfo.length; i--) {
+                trs[i].remove();
+            }
+            trs = tablBody.querySelectorAll('tr');
+            break;
+    }
+
     for (let i = 0; i < trs.length; i++) {
-        const tr = trs[i];
         const hero = heroesInfo[i];
         for (let j = 0; j < infoKeys.length; j++) {
             let td = document.getElementById(`td-${i}-${infoKeys[j]}`);
@@ -127,7 +142,7 @@ function displayHeroes(heroesInfo, trs, infoKeys) {
     }
 }
 
-function search(heroesInfo, tablBody, infoKeys) {
+function search(heroesInfo, tablBody, maxRowsNumber, infoKeys) {
     search = document.getElementById('search')
     search.addEventListener('input', (e) => {
         let trs = tablBody.querySelectorAll('tr');
@@ -135,15 +150,8 @@ function search(heroesInfo, tablBody, infoKeys) {
         let heroes = heroesInfo.filter(hero => {
             return hero.get('name').toLowerCase().includes(textForSearch.toLowerCase())
         });
-        if (heroes.length > trs.length) {
-            displayHeroes(heroes.slice(0, trs.length), trs, infoKeys);
-        } else {
-            for (let i = trs.length -1; i >= heroes.length; i--) {
-                trs[i].remove();
-            }
-            trs = tablBody.querySelectorAll('tr');
-            displayHeroes(heroes, trs, infoKeys);
-        }
+
+        displayHeroes(heroes.slice(0, maxRowsNumber), tablBody, maxRowsNumber, infoKeys);
 
     });
 }
