@@ -136,7 +136,14 @@ function displayHeroes(heroesInfo, tablBody, maxRowsNumber, infoKeys) {
         const hero = heroesInfo[i];
         for (let j = 0; j < infoKeys.length; j++) {
             let td = document.getElementById(`td-${i}-${infoKeys[j]}`);
-            td.innerHTML = hero.get(infoKeys[j]);
+            if (infoKeys[j] === 'icon') {
+                td.style.backgroundImage = `url(${hero.get('icon')})`;
+                td.style.backgroundRepeat = 'no-repeat';
+               // td.style.backgroundSize = 'cover';
+                td.style.backgroundPosition = 'center';
+            } else {
+                td.innerHTML = hero.get(infoKeys[j]);
+            }
         }
 
     }

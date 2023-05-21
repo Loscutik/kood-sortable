@@ -49,8 +49,8 @@ body {
   table {
 	width: 100%;
 	border: none;
-    margin-top: 20vh;
-	margin-bottom: 5vhpx;
+    margin-top: 10vh;
+	margin-bottom: 5vh;
 }
 table thead th {
 	font-weight: bold;
