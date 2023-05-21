@@ -2,6 +2,7 @@
 import { TableHead, Powerstats } from './sortable.data.js';
 
 //TODO scrolling table's rows and fixed header
+//TODO displaying in multiple pages
 export function seeThemAll() {
     const searcher = document.createElement('input');
     searcher.id = 'search';
@@ -19,12 +20,12 @@ export function seeThemAll() {
 
 
 function loadData(heroes) {
-    const cons = document.getElementById('cons');
+    //const cons = document.getElementById('cons');
 
     const infoKeys = tableCreate();
 
     let heroesValubaleInformations = heroes.map(hero => {
-        cons.textContent = hero.appearance.height.constructor.name + ' ' + hero.appearance.weight[1];
+        //cons.textContent = hero.appearance.height.constructor.name + ' ' + hero.appearance.weight[1];
 
         const info = new Map();
         info.set('id', hero.id);
@@ -47,8 +48,6 @@ function loadData(heroes) {
         return info;
     });
 
-    //cons.textContent = cons.textContent + ' - ' + heroesValubaleInformations[2].get('powerstats_speed');
-    // console.log(heroesValubaleInformations.slice(0, 2));
     let rowsNum = 5;
     const tbody = document.getElementById('tbody');
     createRows(0, rowsNum, tbody, infoKeys);
@@ -56,7 +55,7 @@ function loadData(heroes) {
     displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
     search(heroesValubaleInformations, tbody, rowsNum, infoKeys)
 
-    // TODO sort filtered heroes
+    // TODO sort filtered heroes (these ones that are displayed after the search)
     let sortedField = 'name';
     let sign = 1;
     document.getElementById(`thead`).addEventListener('click', event => {
@@ -66,7 +65,7 @@ function loadData(heroes) {
             heroesValubaleInformations = sortMixedField(heroesValubaleInformations, field, sign);
             sortedField = field;
             displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
-        } else {
+        } else if( infoKeys.includes(field)) {
             heroesValubaleInformations = sortSimpleField(heroesValubaleInformations, field, sign);
             sortedField = field;
             displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
