@@ -54,7 +54,7 @@ body {
 }
 table thead th {
 	font-weight: bold;
-	text-align: left;
+	text-align: center;
 	border: none;
 	padding: 10px 15px;
 	background: #d8d8d8;
