@@ -220,21 +220,41 @@ function sortSimpleField(heroesInfo, infoKey, sign) {
     }
 }
 
-//TODO convert meters to cm and tones to kg. check all measures
-function sortMixedField(heroesInfo, infoKey, sign) {
+//TODO convert meters to cm and tones to kg. check all measures - DONE
+
+function Converter(a) {
+    if (a.includes("kg")) {
+      return parseInt(a);
+    } else if (a.includes("tons")) {
+      if (a.includes(",")) {
+        return parseInt(a) * (1000 * 1000);
+      } else {
+        return parseInt(a) * 1000;
+      }
+    } else if (a.includes("cm")) {
+      return parseInt(a);
+    } else if (a.includes("meters")) {
+      return parseInt(a) * 100;
+    }
+    return a;
+  }
+  function sortMixedField(heroesInfo, infoKey, sign) {
     return heroesInfo.sort((h1, h2) => {
-        if (!h1.get(infoKey)) return 1;
-        if (!h2.get(infoKey)) return -1;
-        if (!h1.get(infoKey) && !h2.get(infoKey)) return 0;
-        const num1 = h1.get(infoKey).split(' ')[0];
-        const num2 = h2.get(infoKey).split(' ')[0];
-        if (isNaN(num1) || num1 == 0) return 1;
-        if (isNaN(num2) || num2 == 0) return -1;
-        if ((isNaN(num1) || num1 == 0) && (isNaN(num2) || num2 == 0)) return 0;
-        if (num1 < num2) return -1 * sign;
-        if (num1 > num2) return sign;
-        return 0;
+      const value1 = h1.get(infoKey);
+      const value2 = h2.get(infoKey);
+  
+      // Apply conversion if needed
+      const convertedValue1 = typeof value1 === 'string' ? Converter(value1) : value1;
+      const convertedValue2 = typeof value2 === 'string' ? Converter(value2) : value2;
+  
+      if (convertedValue1 === undefined || convertedValue1 === null) return 1;
+      if (convertedValue2 === undefined || convertedValue2 === null) return -1;
+      if ((convertedValue1 === undefined || convertedValue1 === null) && (convertedValue2 === undefined || convertedValue2 === null)) return 0;
+  
+      if (convertedValue1 < convertedValue2) return -1 * sign;
+      if (convertedValue1 > convertedValue2) return sign;
+      return 0;
     });
-}
+  }
 
 
