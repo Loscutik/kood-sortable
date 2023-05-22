@@ -2,7 +2,7 @@
 import { TableHead, Powerstats } from './sortable.data.js';
 
 //TODO scrolling table's rows and fixed header
-//TODO displaying in multiple pages
+
 export function seeThemAll() {
     const searcher = document.createElement('input');
     searcher.id = 'search';
@@ -54,6 +54,48 @@ function loadData(heroes) {
     //const trs = tbody.querySelectorAll('tr');
     displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
     search(heroesValubaleInformations, tbody, rowsNum, infoKeys)
+
+    //TODO displaying in multiple pages- DONE -------------------------------------//
+
+    const paginationContainer = document.getElementById('pagination-container');
+    const prevButton = document.getElementById('prev-button');
+    const nextButton = document.getElementById('next-button');
+
+    let currentPage = 1;
+    const totalPages = Math.ceil(heroesValubaleInformations.length / rowsNum);
+
+    // Function to display heroes on the current page
+    function displayCurrentPage() {
+        const startNum = (currentPage - 1) * rowsNum;
+        const endNum = startNum + rowsNum;
+        displayHeroes(heroesValubaleInformations.slice(startNum, endNum), tbody, rowsNum, infoKeys);
+    }
+    
+    // Function to update pagination buttons' disabled state
+    function updatePaginationButtons() {
+        prevButton.disabled = currentPage === 1;
+        nextButton.disabled = currentPage === totalPages;
+    }
+    
+    // Display heroes on the initial page
+    displayCurrentPage();
+
+    // Add event listeners for pagination buttons
+    prevButton.addEventListener('click', function () {
+        if (currentPage > 1) {
+            currentPage--;
+            displayCurrentPage();
+            updatePaginationButtons();
+        }
+    });
+    nextButton.addEventListener('click', function () {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayCurrentPage();
+            updatePaginationButtons();
+        }
+    });
+    //-----------------------------------------------------------------------------//
 
     // TODO sort filtered heroes (these ones that are displayed after the search)
     let sortedField = 'name';
@@ -110,6 +152,21 @@ export function tableCreate() {
         tr1.appendChild(th1);
 
     }
+//-----------------------------------------------------------------------------//
+    const paginationContainer = document.createElement('div');
+    paginationContainer.id = 'pagination-container';
+    document.body.appendChild(paginationContainer);
+  
+    const prevButton = document.createElement('button');
+    prevButton.id = 'prev-button';
+    prevButton.textContent = 'Previous';
+    paginationContainer.appendChild(prevButton);
+  
+    const nextButton = document.createElement('button');
+    nextButton.id = 'next-button';
+    nextButton.textContent = 'Next';
+    paginationContainer.appendChild(nextButton);
+//-----------------------------------------------------------------------------//
     thead.appendChild(tr1);
     thead.appendChild(tr2);
 
@@ -220,7 +277,7 @@ function sortSimpleField(heroesInfo, infoKey, sign) {
     }
 }
 
-//TODO convert meters to cm and tones to kg. check all measures - DONE
+//TODO convert meters to cm and tones to kg. check all measures - DONE -----------//
 
 function Converter(a) {
     if (a.includes("kg")) {
@@ -256,5 +313,5 @@ function Converter(a) {
       return 0;
     });
   }
-
+//-----------------------------------------------------------------------------//
 
