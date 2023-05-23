@@ -70,13 +70,13 @@ function loadData(heroes) {
         const endNum = startNum + rowsNum;
         displayHeroes(heroesValubaleInformations.slice(startNum, endNum), tbody, rowsNum, infoKeys);
     }
-    
+
     // Function to update pagination buttons' disabled state
     function updatePaginationButtons() {
         prevButton.disabled = currentPage === 1;
         nextButton.disabled = currentPage === totalPages;
     }
-    
+
     // Display heroes on the initial page
     displayCurrentPage();
 
@@ -107,7 +107,7 @@ function loadData(heroes) {
             heroesValubaleInformations = sortMixedField(heroesValubaleInformations, field, sign);
             sortedField = field;
             displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
-        } else if( infoKeys.includes(field)) {
+        } else if (infoKeys.includes(field)) {
             heroesValubaleInformations = sortSimpleField(heroesValubaleInformations, field, sign);
             sortedField = field;
             displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
@@ -152,21 +152,21 @@ export function tableCreate() {
         tr1.appendChild(th1);
 
     }
-//-----------------------------------------------------------------------------//
+    //-----------------------------------------------------------------------------//
     const paginationContainer = document.createElement('div');
     paginationContainer.id = 'pagination-container';
     document.body.appendChild(paginationContainer);
-  
+
     const prevButton = document.createElement('button');
     prevButton.id = 'prev-button';
     prevButton.textContent = 'Previous';
     paginationContainer.appendChild(prevButton);
-  
+
     const nextButton = document.createElement('button');
     nextButton.id = 'next-button';
     nextButton.textContent = 'Next';
     paginationContainer.appendChild(nextButton);
-//-----------------------------------------------------------------------------//
+    //-----------------------------------------------------------------------------//
     thead.appendChild(tr1);
     thead.appendChild(tr2);
 
@@ -281,37 +281,34 @@ function sortSimpleField(heroesInfo, infoKey, sign) {
 
 function Converter(a) {
     if (a.includes("kg")) {
-      return parseInt(a);
+        return parseInt(a);
     } else if (a.includes("tons")) {
-      if (a.includes(",")) {
-        return parseInt(a) * (1000 * 1000);
-      } else {
-        return parseInt(a) * 1000;
-      }
+        return parseInt(a.replaceAll(',', '')) * 1000;
     } else if (a.includes("cm")) {
-      return parseInt(a);
+        return parseFloat(a);
     } else if (a.includes("meters")) {
-      return parseInt(a) * 100;
+        return parseFloat(a) * 100;
     }
     return a;
-  }
-  function sortMixedField(heroesInfo, infoKey, sign) {
+}
+
+function sortMixedField(heroesInfo, infoKey, sign) {
     return heroesInfo.sort((h1, h2) => {
-      const value1 = h1.get(infoKey);
-      const value2 = h2.get(infoKey);
-  
-      // Apply conversion if needed
-      const convertedValue1 = typeof value1 === 'string' ? Converter(value1) : value1;
-      const convertedValue2 = typeof value2 === 'string' ? Converter(value2) : value2;
-  
-      if (convertedValue1 === undefined || convertedValue1 === null) return 1;
-      if (convertedValue2 === undefined || convertedValue2 === null) return -1;
-      if ((convertedValue1 === undefined || convertedValue1 === null) && (convertedValue2 === undefined || convertedValue2 === null)) return 0;
-  
-      if (convertedValue1 < convertedValue2) return -1 * sign;
-      if (convertedValue1 > convertedValue2) return sign;
-      return 0;
+        const value1 = h1.get(infoKey);
+        const value2 = h2.get(infoKey);
+
+        // Apply conversion if needed
+        const convertedValue1 = typeof value1 === 'string' ? Converter(value1) : value1;
+        const convertedValue2 = typeof value2 === 'string' ? Converter(value2) : value2;
+
+        if (convertedValue1 === undefined || convertedValue1 === null) return 1;
+        if (convertedValue2 === undefined || convertedValue2 === null) return -1;
+        if ((convertedValue1 === undefined || convertedValue1 === null) && (convertedValue2 === undefined || convertedValue2 === null)) return 0;
+
+        if (convertedValue1 < convertedValue2) return -1 * sign;
+        if (convertedValue1 > convertedValue2) return sign;
+        return 0;
     });
-  }
+}
 //-----------------------------------------------------------------------------//
 
