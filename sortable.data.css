@@ -14,12 +14,10 @@ body {
     align-content: center;
     width: 100vw;
     height: 100vh;
-    padding: 5rem;
-    cursor: crosshair;
 }
 
 
-.cons{
+.cons {
     width: 50vw;
     height: 5vh;
     position: absolute;
@@ -30,10 +28,18 @@ body {
     border: solid 1px green;
     margin: auto;
     text-align: left;
-  }
+}
 
-  #search{
-    display:block;
+header {
+    width: 100vw;
+    height: 40px;
+    position: fixed;
+    top: 0;
+    font-size: 14px;
+}
+
+#searcher {
+    display: block;
     width: 20vw;
     height: 20px;
     position: fixed;
@@ -44,42 +50,69 @@ body {
     border: solid 2px green;
     margin: auto;
     text-align: left;
-  }
-
-  table {
-	width: 100%;
-	border: none;
-    margin-top: 10vh;
-	margin-bottom: 5vh;
 }
-table thead{
+
+#selectForm {
+    display: block;
+    width: 20vw;
+    height: 20px;
+    font-size: 14px;
+    margin: auto;
+    text-align: center;
+}
+
+#tableSection {
+    height: 90vh;
+    overflow:scroll
+}
+
+table {
+    width: 100%;
+    border: none;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+}
+
+table thead {
     position: sticky;
     top: 25px;
-} 
+}
+
 table thead th {
-	font-weight: bold;
-	text-align: center;
-	border: none;
-	padding: 10px 15px;
-	background: #d8d8d8;
-	font-size: 14px;
-	border-left: 1px solid #ddd;
-	border-right: 1px solid #ddd;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    padding: 10px 15px;
+    background: #d8d8d8;
+    font-size: 14px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
 }
+
 table tbody td {
-	text-align: left;
-	border-left: 1px solid #ddd;
-	border-right: 1px solid #ddd;
-	padding: 10px 15px;
-	font-size: 14px;
-	vertical-align: top;
+    text-align: left;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    padding: 10px 15px;
+    font-size: 14px;
+    vertical-align: top;
 }
-table thead tr th:first-child, table tbody tr td:first-child {
-	border-left: none;
+
+table thead tr th:first-child,
+table tbody tr td:first-child {
+    border-left: none;
 }
-table thead tr th:last-child, table tbody tr td:last-child {
-	border-right: none;
+
+table thead tr th:last-child,
+table tbody tr td:last-child {
+    border-right: none;
 }
-table tbody tr:nth-child(even){
-	background: #f3f3f3;
+
+table tbody tr:nth-child(even) {
+    background: #f3f3f3;
+}
+
+#pagination-container{
+    position: fixed;
+    top: 90vh;
 }

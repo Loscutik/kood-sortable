@@ -1,35 +1,15 @@
 //  let heroValubaleInformation
 
-import { tableCreate, createRows } from './view-create.js';
+import { tableCreate, createRows, headerCreate } from './view-create.js';
 import { search } from './search.js';
 import { displayHeroes } from './display.js';
 import { sortMixedField, sortSimpleField } from './sort.js';
 
+const INIT_ROWS_NUMBER = 20
+
 export function seeThemAll() {
     //TODO put this in  functions in view-create.js these functions will return created elements
-    const searcher = document.createElement('input');
-    searcher.id = 'search';
-    searcher.setAttribute('placeholder', 'Type name');
-    document.body.appendChild(searcher);
-
-    const labelSelectorPages = document.createElement('label');
-    labelSelectorPages.id = 'labelSelectorPages';
-    labelSelectorPages.setAttribute('for', 'selectPage');
-    labelSelectorPages.textContent = 'Select number of pages';
-    
-    const selectPage = document.createElement('select');
-    selectPage.id = 'selectPage';
-    document.body.appendChild(labelSelectorPages);
-    document.body.appendChild(selectPage);
-
-    for (let pagesNumers of ['10', '20','50', '100', 'all results']){
-        const option = document.createElement('option');
-        option.id = `option-${pagesNumers}`;
-        option.setAttribute('value', pagesNumers);
-        option.textContent = pagesNumers;
-        selectPage.appendChild(option);
-    }
-    document.getElementById('option-20').setAttribute('selected','');
+    headerCreate(INIT_ROWS_NUMBER)
     //----------------------------------------------------------------
 
 
@@ -46,7 +26,7 @@ function loadData(heroes) {
 
     const infoKeys = tableCreate();
 
-    let heroesValubaleInformations = heroes.map(hero => {
+    const heroesValubaleInformations = heroes.map(hero => {
         //cons.textContent = hero.appearance.height.constructor.name + ' ' + hero.appearance.weight[1];
 
         const info = new Map();
@@ -70,22 +50,26 @@ function loadData(heroes) {
         return info;
     });
 
-    let rowsNum = 5;
+    let rowsNum = INIT_ROWS_NUMBER;
     const tbody = document.getElementById('tbody');
     createRows(0, rowsNum, tbody, infoKeys);
     //const trs = tbody.querySelectorAll('tr');
     displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
     search(heroesValubaleInformations, tbody, rowsNum, infoKeys)
 
-    //TODO displaying in multiple pages- DONE -------------------------------------//
+    //displaying in multiple pages--------------------------------------//
 
     const paginationContainer = document.getElementById('pagination-container');
     const prevButton = document.getElementById('prev-button');
     const nextButton = document.getElementById('next-button');
 
-    let currentPage=1;  
-    prevButton.disabled = true;
-    const totalPages = Math.ceil(heroesValubaleInformations.length / rowsNum);
+    let currentPage = 1;
+    function setOnFirstPage() {
+        currentPage = 1;
+        prevButton.disabled = true;
+    }
+    setOnFirstPage()
+    let totalPages = Math.ceil(heroesValubaleInformations.length / rowsNum);
 
     // Function to display heroes on the current page
     function displayCurrentPage() {
@@ -120,6 +104,23 @@ function loadData(heroes) {
     });
     //-----------------------------------------------------------------------------//
 
+    //display selected quantity of heroes----------------------------------------------
+    selectRowsNumber.addEventListener('change', event => {
+        if (event.target.value === 'all results'){
+            rowsNum =   heroesValubaleInformations.length;
+            nextButton.disabled =true;
+            totalPages =1;
+        }else{
+            rowsNum =  parseInt(event.target.value);
+            totalPages = Math.ceil(heroesValubaleInformations.length / rowsNum);
+        }
+        displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
+        setOnFirstPage();
+
+    });
+    //-----------------------------------------------------------------------------//
+
+    //sorting----------------------------------------------------------------
     // TODO sort filtered heroes (those ones that are displayed after the search)
     let sortedField = 'name';
     let sign = 1;
@@ -133,11 +134,11 @@ function loadData(heroes) {
         }
         sortedField = field;
         displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
-        currentPage=1;  prevButton.disabled = true;
+        setOnFirstPage();
     });
 
+    //-----------------------------------------------------------------------------//
 }
 
 
-//-----------------------------------------------------------------------------//
 

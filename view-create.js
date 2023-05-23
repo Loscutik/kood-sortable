@@ -1,14 +1,18 @@
 import { TableHead, Powerstats } from './sortable.data.js';
 
-//creates a table with a head but without rows.  
+// creates a table with a head but without rows.  
 // It returns an array with keys, which are used for identification cells (th and td) in the table and heroes in a Map.
 // Say we've kept an element of the array with keys in a variable infoKey, 
 // then the <th> element will have id=`th-${infoKey}` (for example: th-name)
 // and corresponding hero's property can be retrived in this way:  hero.get(infoKey) (for example hero.get('name'))
 export function tableCreate() {
+    const tableSection=document.createElement('section');
+    tableSection.id = 'tableSection';
+    document.body.appendChild(tableSection);
+
     const table = document.createElement('table');
     table.setAttribute('id', 'table');
-    document.body.appendChild(table);
+    tableSection.appendChild(table);
 
     let infoKeys = [];
 
@@ -84,3 +88,40 @@ export function createRows(startNum, endNum, tablBody, infoKeys) {
         tablBody.appendChild(tr);
     }
 }
+// creates an element header with placeholder fo search input and selector rows' quantity
+export function headerCreate(selectedOption) {
+
+    const header = document.createElement('header');
+    header.id = 'header';
+    document.body.appendChild(header);
+
+    const searcher = document.createElement('input');
+    searcher.id = 'searcher';
+    searcher.setAttribute('placeholder', 'Type name');
+    header.appendChild(searcher);
+
+    const selectForm = document.createElement('form');
+    selectForm.id = 'selectForm';
+    header.appendChild(selectForm);
+
+
+    const labelSelectorPages = document.createElement('label');
+    labelSelectorPages.id = 'labelSelectorPages';
+    labelSelectorPages.setAttribute('for', 'selectRowsNumber');
+    labelSelectorPages.textContent = 'Select number of pages';
+
+    const selectRowsNumber = document.createElement('select');
+    selectRowsNumber.id = 'selectRowsNumber';
+    selectRowsNumber.setAttribute('name', 'selectRowsNumber');
+    selectForm.appendChild(labelSelectorPages);
+    selectForm.appendChild(selectRowsNumber);
+
+    for (let pagesNumers of ['10', '20', '50', '100', 'all results']) {
+        const option = document.createElement('option');
+        option.id = `option-${pagesNumers}`;
+        option.setAttribute('value', pagesNumers);
+        option.textContent = pagesNumers;
+        selectRowsNumber.appendChild(option);
+    }
+    document.getElementById(`option-${selectedOption}`).setAttribute('selected', '');
+} 
