@@ -3,17 +3,34 @@
 import { tableCreate, createRows } from './view-create.js';
 import { search } from './search.js';
 import { displayHeroes } from './display.js';
-import { sortMixedField,sortSimpleField } from './sort.js';
-
-
-//TODO scrolling table's rows and fixed header
+import { sortMixedField, sortSimpleField } from './sort.js';
 
 export function seeThemAll() {
+    //TODO put this in  functions in view-create.js these functions will return created elements
     const searcher = document.createElement('input');
     searcher.id = 'search';
     searcher.setAttribute('placeholder', 'Type name');
     document.body.appendChild(searcher);
 
+    const labelSelectorPages = document.createElement('label');
+    labelSelectorPages.id = 'labelSelectorPages';
+    labelSelectorPages.setAttribute('for', 'selectPage');
+    labelSelectorPages.textContent = 'Select number of pages';
+    
+    const selectPage = document.createElement('select');
+    selectPage.id = 'selectPage';
+    document.body.appendChild(labelSelectorPages);
+    document.body.appendChild(selectPage);
+
+    for (let pagesNumers of ['10', '20','50', '100', 'all results']){
+        const option = document.createElement('option');
+        option.id = `option-${pagesNumers}`;
+        option.setAttribute('value', pagesNumers);
+        option.textContent = pagesNumers;
+        selectPage.appendChild(option);
+    }
+    document.getElementById('option-20').setAttribute('selected','');
+    //----------------------------------------------------------------
 
 
     // Request the file with fetch, the data will downloaded to your browser cache.
@@ -66,7 +83,8 @@ function loadData(heroes) {
     const prevButton = document.getElementById('prev-button');
     const nextButton = document.getElementById('next-button');
 
-    let currentPage = 1;
+    let currentPage=1;  
+    prevButton.disabled = true;
     const totalPages = Math.ceil(heroesValubaleInformations.length / rowsNum);
 
     // Function to display heroes on the current page
@@ -102,22 +120,20 @@ function loadData(heroes) {
     });
     //-----------------------------------------------------------------------------//
 
-    // TODO sort filtered heroes (these ones that are displayed after the search)
+    // TODO sort filtered heroes (those ones that are displayed after the search)
     let sortedField = 'name';
     let sign = 1;
     document.getElementById(`thead`).addEventListener('click', event => {
-        const field = event.target.id.slice(3);
+        const field = event.target.id.slice(3); // get the property of a hero from a table header
         if (field === sortedField) { sign = -1 * sign; } else { sign = 1; }
         if (field === 'height' || field === 'weight') {
             heroesValubaleInformations = sortMixedField(heroesValubaleInformations, field, sign);
-            sortedField = field;
-            displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
         } else if (infoKeys.includes(field)) {
             heroesValubaleInformations = sortSimpleField(heroesValubaleInformations, field, sign);
-            sortedField = field;
-            displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
         }
-
+        sortedField = field;
+        displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
+        currentPage=1;  prevButton.disabled = true;
     });
 
 }
