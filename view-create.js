@@ -1,4 +1,4 @@
-import { TableHead, Powerstats } from './sortable.data.js';
+import { TableHead, Powerstats, INIT_ROWS_NUMBER, ROWS_NUMBER_OPTIONS, SearchOperations } from './sortable.data.js';
 
 // creates a table with a head but without rows.  
 // It returns an array with keys, which are used for identification cells (th and td) in the table and heroes in a Map.
@@ -6,7 +6,7 @@ import { TableHead, Powerstats } from './sortable.data.js';
 // then the <th> element will have id=`th-${infoKey}` (for example: th-name)
 // and corresponding hero's property can be retrived in this way:  hero.get(infoKey) (for example hero.get('name'))
 export function tableCreate() {
-    const tableSection=document.createElement('section');
+    const tableSection = document.createElement('section');
     tableSection.id = 'tableSection';
     document.body.appendChild(tableSection);
 
@@ -89,21 +89,50 @@ export function createRows(startNum, endNum, tablBody, infoKeys) {
     }
 }
 // creates an element header with placeholder fo search input and selector rows' quantity
-export function headerCreate(selectedOption) {
+export function headerCreate() {
 
     const header = document.createElement('header');
     header.id = 'header';
     document.body.appendChild(header);
-
-    const searcher = document.createElement('input');
+    // search ----------------------------------------------//
+    const searcher = document.createElement('section');
     searcher.id = 'searcher';
-    searcher.setAttribute('placeholder', 'Type name');
     header.appendChild(searcher);
 
+    const labelSearcher = document.createElement('label');
+    labelSearcher.id = 'labelSearcher';
+    labelSearcher.setAttribute('for', 'searcherSelect');
+    labelSearcher.textContent = 'Search by:';
+    searcher.appendChild(labelSearcher);
+
+    const searcherSelect = document.createElement('select');
+    searcherSelect.id = 'searcherSelect';
+    searcher.appendChild(searcherSelect);
+
+    const searcherSelectOperation = document.createElement('select');
+    searcherSelectOperation.id = 'searcherSelectOperation';
+    searcher.appendChild(searcherSelectOperation);
+    for (let operation of SearchOperations) {
+        const option = document.createElement('option');
+        option.id = `optionoperations-${operation[1]}`;
+        option.setAttribute('value', operation[1]); //
+        option.textContent = operation[0];
+        searcherSelectOperation.appendChild(option);
+    }
+    document.getElementById(`optionoperations-in`).setAttribute('selected', '');
+
+
+    const searcherInput = document.createElement('input');
+    searcherInput.id = 'searcherInput';
+    searcherInput.setAttribute('placeholder', 'Type name');
+    searcher.appendChild(searcherInput);
+
+    // END search ----------------------------------------------//
+
+    // numbers of rows selector ---------------------------------//
     const selectForm = document.createElement('form');
     selectForm.id = 'selectForm';
     header.appendChild(selectForm);
-
 
     const labelSelectorPages = document.createElement('label');
     labelSelectorPages.id = 'labelSelectorPages';
@@ -116,12 +145,30 @@ export function headerCreate(selectedOption) {
     selectForm.appendChild(labelSelectorPages);
     selectForm.appendChild(selectRowsNumber);
 
-    for (let pagesNumers of ['10', '20', '50', '100', 'all results']) {
+    for (let pagesNumers of ROWS_NUMBER_OPTIONS) {
         const option = document.createElement('option');
         option.id = `option-${pagesNumers}`;
         option.setAttribute('value', pagesNumers);
         option.textContent = pagesNumers;
         selectRowsNumber.appendChild(option);
     }
-    document.getElementById(`option-${selectedOption}`).setAttribute('selected', '');
-} 
+    document.getElementById(`option-${INIT_ROWS_NUMBER}`).setAttribute('selected', '');
+    // END numbers of rows selector ------------------------------//
+
+}
+
+export function fillSearchOptions(infoKeys, selectedSearchOption) {
+    const searcherSelect = document.getElementById('searcherSelect')
+    for (let infoKey of infoKeys) {
+        let columnNameElem = document.getElementById(`th-${infoKey}`);
+        const option = document.createElement('option');
+        option.id = `optionsearch-${infoKey}`;
+        option.setAttribute('value', infoKey); //
+        option.textContent = columnNameElem.innerHTML;
+        searcherSelect.appendChild(option);
+    }
+    document.getElementById(`optionsearch-${selectedSearchOption}`).setAttribute('selected', '');
+
+}
+
+

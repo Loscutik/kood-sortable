@@ -1,26 +1,27 @@
 //  let heroValubaleInformation
 
-import { tableCreate, createRows, headerCreate } from './view-create.js';
+import { tableCreate, createRows, headerCreate,fillSearchOptions } from './view-create.js';
 import { displayHeroes } from './display.js';
 import { sortMixedField, sortSimpleField } from './sort.js';
+import { INIT_ROWS_NUMBER,INIT_SEARCH_FIELD } from './sortable.data.js';
 
-const INIT_ROWS_NUMBER = 20
 
 export function seeThemAll() {
-    headerCreate(INIT_ROWS_NUMBER)
-
+    
     // Request the file with fetch, the data will downloaded to your browser cache.
     fetch('https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json')
-        .then((response) => response.json()) // parse the response from JSON
-        .then(loadData)  // .then will call the `loadData` function with the JSON value.
-
+    .then((response) => response.json()) // parse the response from JSON
+    .then(loadData)  // .then will call the `loadData` function with the JSON value.
+    
 }
 
 
 function loadData(heroes) {
     //const cons = document.getElementById('cons');
-
+    
+    headerCreate();
     const infoKeys = tableCreate();
+    fillSearchOptions(infoKeys,INIT_SEARCH_FIELD);
 
     const heroesValubaleInformations = heroes.map(hero => {
         //cons.textContent = hero.appearance.height.constructor.name + ' ' + hero.appearance.weight[1];
@@ -99,11 +100,21 @@ function loadData(heroes) {
     //-----------------------------------------------------------------------------//
 
     // search desired heroes------------------------------------------------------//
-    const searcher = document.getElementById('searcher')
-    searcher.addEventListener('input', (e) => {
+    let searchBy ={field: 'name', operator: includes}
+
+    let searchByField=INIT_SEARCH_FIELD;
+    const searcherSelect=document.getElementById('searcherSelect');
+    const searcherInput = document.getElementById('searcherInput')
+    searcherSelect.addEventListener('change', event => {
+        searchByField= event.target.value;
+        searcherInput.focus();
+    });
+
+    searcherInput.addEventListener('input', (e) => {
+
         let textForSearch = e.target.value;
         searchedHeroes = heroesValubaleInformations.filter(hero => {
-            return hero.get('name').toLowerCase().includes(textForSearch.toLowerCase())
+            return hero.get(searchByField)&&hero.get(searchByField).toLowerCase().includes(textForSearch.toLowerCase())
         });
     
         totalPages = Math.ceil(searchedHeroes.length / rowsNum);
@@ -114,6 +125,7 @@ function loadData(heroes) {
     //-----------------------------------------------------------------------------//
 
     //display selected quantity of heroes------------------------------------------//
+    const selectRowsNumber=document.getElementById('selectRowsNumber');
     selectRowsNumber.addEventListener('change', event => {
         if (event.target.value === 'all results') {
             rowsNum = searchedHeroes.length;
@@ -131,8 +143,7 @@ function loadData(heroes) {
     //-----------------------------------------------------------------------------//
 
     //sorting----------------------------------------------------------------
-    // TODO sort filtered heroes (those ones that are displayed after the search)
-    let sortedField = 'name';
+    let sortedField = INIT_SEARCH_FIELD;
     let signOfSort = 1; //1 - ascending, -1 - descending
     document.getElementById(`thead`).addEventListener('click', event => {
         const field = event.target.id.slice(3); // get the property of a hero from a table header
