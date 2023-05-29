@@ -1,17 +1,13 @@
 //  let heroValubaleInformation
 
 import { tableCreate, createRows, headerCreate } from './view-create.js';
-import { search } from './search.js';
 import { displayHeroes } from './display.js';
 import { sortMixedField, sortSimpleField } from './sort.js';
 
 const INIT_ROWS_NUMBER = 20
 
 export function seeThemAll() {
-    //TODO put this in  functions in view-create.js these functions will return created elements
     headerCreate(INIT_ROWS_NUMBER)
-    //----------------------------------------------------------------
-
 
     // Request the file with fetch, the data will downloaded to your browser cache.
     fetch('https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json')
@@ -120,13 +116,13 @@ function loadData(heroes) {
     //display selected quantity of heroes------------------------------------------//
     selectRowsNumber.addEventListener('change', event => {
         if (event.target.value === 'all results') {
-            rowsNum = heroesValubaleInformations.length;
+            rowsNum = searchedHeroes.length;
             currentPage = totalPages = 1;
         } else {
             const currentPassedRows = (currentPage - 1) * rowsNum;
             rowsNum = parseInt(event.target.value);
             currentPage = Math.ceil((currentPassedRows + 1) / rowsNum);
-            totalPages = Math.ceil(heroesValubaleInformations.length / rowsNum);
+            totalPages = Math.ceil(searchedHeroes.length / rowsNum);
         }
         displayCurrentPage();
         updatePaginationButtons();
@@ -142,12 +138,12 @@ function loadData(heroes) {
         const field = event.target.id.slice(3); // get the property of a hero from a table header
         if (field === sortedField) { signOfSort = -1 * signOfSort; } else { signOfSort = 1; }
         if (field === 'height' || field === 'weight') {
-            heroesValubaleInformations = sortMixedField(heroesValubaleInformations, field, signOfSort);
+            searchedHeroes = sortMixedField(searchedHeroes, field, signOfSort);
         } else if (infoKeys.includes(field)) {
-            heroesValubaleInformations = sortSimpleField(heroesValubaleInformations, field, signOfSort);
+            searchedHeroes = sortSimpleField(searchedHeroes, field, signOfSort);
         }
         sortedField = field;
-        displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
+        displayHeroes(searchedHeroes.slice(0, rowsNum), tbody, rowsNum, infoKeys);
         setOnFirstPage();
     });
 
