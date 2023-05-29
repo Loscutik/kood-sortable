@@ -114,7 +114,7 @@ export function headerCreate() {
     searcher.appendChild(searcherSelectOperation);
     for (let operation of SearchOperations) {
         const option = document.createElement('option');
-        option.id = `optionoperations-${operation[1]}`;
+        option.id = `optionoperations-${operation[0]}`;
         option.setAttribute('value', operation[1]); //
         option.textContent = operation[0];
         searcherSelectOperation.appendChild(option);

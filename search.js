@@ -3,20 +3,28 @@ const includes = (container, searchElm) => {
     return container.toLowerCase().includes(searchElm.toLowerCase());
 }
 
-const eq = (a, b) =>  a == b;
+const eq = (a, b) => a == b;
 
-const ne = (a, b) =>  a != b;
+const ne = (a, b) => a != b;
 
 const le = (a, b) => {
-    if (Number.isFinite(a)) { 
-        return  isNaN(b) ? false:a<=b;
+    if (Number.isFinite(a)) {
+        return isNaN(b) ? false : a <= b;
     }
     return a <= b;
 }
 
 const ge = (a, b) => {
-    if (Number.isFinite(a)) { 
-        return  isNaN(b) ? false:a>=b;
+    if (Number.isFinite(a)) {
+        return isNaN(b) ? false : a >= b;
     }
     return a >= b;
+}
+
+const operations = {
+    "eq": eq,
+    "ne": ne,
+    "le": le,
+    "ge": ge,
+    "in": includes,
 }
