@@ -53,12 +53,10 @@ function loadData(heroes) {
     let rowsNum = INIT_ROWS_NUMBER;
     const tbody = document.getElementById('tbody');
     createRows(0, rowsNum, tbody, infoKeys);
-    //const trs = tbody.querySelectorAll('tr');
     displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
-    search(heroesValubaleInformations, tbody, rowsNum, infoKeys)
+    let searchedHeroes = heroesValubaleInformations;
 
     //displaying in multiple pages--------------------------------------//
-
     const paginationContainer = document.getElementById('pagination-container');
     const prevButton = document.getElementById('prev-button');
     const nextButton = document.getElementById('next-button');
@@ -69,13 +67,13 @@ function loadData(heroes) {
         prevButton.disabled = true;
     }
     setOnFirstPage()
-    let totalPages = Math.ceil(heroesValubaleInformations.length / rowsNum);
+    let totalPages = Math.ceil(searchedHeroes.length / rowsNum);
 
     // Function to display heroes on the current page
     function displayCurrentPage() {
         const startNum = (currentPage - 1) * rowsNum;
         const endNum = startNum + rowsNum;
-        displayHeroes(heroesValubaleInformations.slice(startNum, endNum), tbody, rowsNum, infoKeys);
+        displayHeroes(searchedHeroes.slice(startNum, endNum), tbody, rowsNum, infoKeys);
     }
 
     // Function to update pagination buttons' disabled state
@@ -104,18 +102,34 @@ function loadData(heroes) {
     });
     //-----------------------------------------------------------------------------//
 
-    //display selected quantity of heroes----------------------------------------------
+    // search desired heroes------------------------------------------------------//
+    const searcher = document.getElementById('searcher')
+    searcher.addEventListener('input', (e) => {
+        let textForSearch = e.target.value;
+        searchedHeroes = heroesValubaleInformations.filter(hero => {
+            return hero.get('name').toLowerCase().includes(textForSearch.toLowerCase())
+        });
+    
+        totalPages = Math.ceil(searchedHeroes.length / rowsNum);
+        currentPage=1;
+        displayCurrentPage();
+        updatePaginationButtons();
+    });
+    //-----------------------------------------------------------------------------//
+
+    //display selected quantity of heroes------------------------------------------//
     selectRowsNumber.addEventListener('change', event => {
-        if (event.target.value === 'all results'){
-            rowsNum =   heroesValubaleInformations.length;
-            nextButton.disabled =true;
-            totalPages =1;
-        }else{
-            rowsNum =  parseInt(event.target.value);
+        if (event.target.value === 'all results') {
+            rowsNum = heroesValubaleInformations.length;
+            currentPage = totalPages = 1;
+        } else {
+            const currentPassedRows = (currentPage - 1) * rowsNum;
+            rowsNum = parseInt(event.target.value);
+            currentPage = Math.ceil((currentPassedRows + 1) / rowsNum);
             totalPages = Math.ceil(heroesValubaleInformations.length / rowsNum);
         }
-        displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
-        setOnFirstPage();
+        displayCurrentPage();
+        updatePaginationButtons();
 
     });
     //-----------------------------------------------------------------------------//
@@ -123,14 +137,14 @@ function loadData(heroes) {
     //sorting----------------------------------------------------------------
     // TODO sort filtered heroes (those ones that are displayed after the search)
     let sortedField = 'name';
-    let sign = 1;
+    let signOfSort = 1; //1 - ascending, -1 - descending
     document.getElementById(`thead`).addEventListener('click', event => {
         const field = event.target.id.slice(3); // get the property of a hero from a table header
-        if (field === sortedField) { sign = -1 * sign; } else { sign = 1; }
+        if (field === sortedField) { signOfSort = -1 * signOfSort; } else { signOfSort = 1; }
         if (field === 'height' || field === 'weight') {
-            heroesValubaleInformations = sortMixedField(heroesValubaleInformations, field, sign);
+            heroesValubaleInformations = sortMixedField(heroesValubaleInformations, field, signOfSort);
         } else if (infoKeys.includes(field)) {
-            heroesValubaleInformations = sortSimpleField(heroesValubaleInformations, field, sign);
+            heroesValubaleInformations = sortSimpleField(heroesValubaleInformations, field, signOfSort);
         }
         sortedField = field;
         displayHeroes(heroesValubaleInformations.slice(0, rowsNum), tbody, rowsNum, infoKeys);
