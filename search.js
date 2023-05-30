@@ -46,3 +46,10 @@ export const Operations = {
     "includes": includes,
     "excludes": excludes,
 }
+
+export function changeSearchParamsInUrl(name, value) {
+    const location =document.location;
+    let searchParams=new URLSearchParams(document.location.search);
+    searchParams.set( name,value);
+    return `${location.origin}${location.pathname}?${searchParams}`;
+}

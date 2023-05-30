@@ -112,6 +112,11 @@ table thead th {
     font-size: 14px;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
+    cursor: pointer;
+}
+
+#th-powerstats {
+    cursor: default;   
 }
 
 table tbody td {
