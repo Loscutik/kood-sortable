@@ -18,4 +18,4 @@ export const INIT_SEARCH_FIELD = 'name';
 export const INIT_ROWS_NUMBER = 20;
 export const ROWS_NUMBER_OPTIONS = ['10', '20', '50', '100', 'all results'];
 
-export const SearchOperations = [["=", 'eq'], ["!=", 'ne'], ["<=", 'le'], [">=", 'ge'], ["in", 'includes',]];
+export const SearchOperations = [["=", 'eq'], ["!=", 'ne'], ["<=", 'le'], [">=", 'ge'], ["includes", 'includes',], ["excludes", 'excludes',]];

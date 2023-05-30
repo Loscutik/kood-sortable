@@ -1,4 +1,5 @@
-import { TableHead, Powerstats, INIT_ROWS_NUMBER, ROWS_NUMBER_OPTIONS, SearchOperations } from './sortable.data.js';
+import { TableHead, Powerstats, INIT_ROWS_NUMBER, ROWS_NUMBER_OPTIONS } from './sortable.data.js';
+import { Operations } from './search.js';
 
 // creates a table with a head but without rows.  
 // It returns an array with keys, which are used for identification cells (th and td) in the table and heroes in a Map.
@@ -102,29 +103,32 @@ export function headerCreate() {
     const labelSearcher = document.createElement('label');
     labelSearcher.id = 'labelSearcher';
     labelSearcher.setAttribute('for', 'searcherSelect');
-    labelSearcher.textContent = 'Search by:';
+    const fontawesomeFiltr= document.createElement('i');
+    fontawesomeFiltr.classList = "fa-solid fa-filter";
+    labelSearcher.appendChild(fontawesomeFiltr);
     searcher.appendChild(labelSearcher);
 
-    const searcherSelect = document.createElement('select');
-    searcherSelect.id = 'searcherSelect';
-    searcher.appendChild(searcherSelect);
+    const searcherSelectField = document.createElement('select');
+    searcherSelectField.id = 'searcherSelectField';
+    searcher.appendChild(searcherSelectField);
 
     const searcherSelectOperation = document.createElement('select');
     searcherSelectOperation.id = 'searcherSelectOperation';
     searcher.appendChild(searcherSelectOperation);
-    for (let operation of SearchOperations) {
+    const OperationsName=Object.keys(Operations);
+    for (let operation of OperationsName) {
         const option = document.createElement('option');
-        option.id = `optionoperations-${operation[0]}`;
-        option.setAttribute('value', operation[1]); //
-        option.textContent = operation[0];
+        option.id = `optionoperations-${operation}`;
+        option.setAttribute('value', operation);
+        option.textContent = operation;
         searcherSelectOperation.appendChild(option);
     }
-    document.getElementById(`optionoperations-in`).setAttribute('selected', '');
+    document.getElementById(`optionoperations-includes`).setAttribute('selected', '');
 
 
     const searcherInput = document.createElement('input');
     searcherInput.id = 'searcherInput';
-    searcherInput.setAttribute('placeholder', 'Type name');
+    searcherInput.setAttribute('placeholder', 'Type something');
     searcher.appendChild(searcherInput);
 
     // END search ----------------------------------------------//
@@ -158,14 +162,14 @@ export function headerCreate() {
 }
 
 export function fillSearchOptions(infoKeys, selectedSearchOption) {
-    const searcherSelect = document.getElementById('searcherSelect')
+    const searcherSelectField = document.getElementById('searcherSelectField')
     for (let infoKey of infoKeys) {
         let columnNameElem = document.getElementById(`th-${infoKey}`);
         const option = document.createElement('option');
         option.id = `optionsearch-${infoKey}`;
         option.setAttribute('value', infoKey); //
         option.textContent = columnNameElem.innerHTML;
-        searcherSelect.appendChild(option);
+        searcherSelectField.appendChild(option);
     }
     document.getElementById(`optionsearch-${selectedSearchOption}`).setAttribute('selected', '');
 
